@@ -4,7 +4,7 @@ const RevealPlantUML = {
   id: 'plantuml',
   init: function(reveal) {
     const config = reveal.getConfig().plantuml || {};
-    const server = config.serverPath || 'https://www.plantuml.com/plantuml/svg/';
+    const server = config.serverPath || '//www.plantuml.com/plantuml/svg/';
 
     const update = () => {
       const blocks = document.querySelectorAll('pre code[class*="language-plantuml"], pre code[class*="plantuml"]');
