@@ -1,36 +1,43 @@
-(function (root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        root.RevealPlantUML = factory();
-    } else if (typeof exports === 'object') {
-        module.exports = factory();
-    } else {
-        root.RevealPlantUML = factory();
-    }
-}(this, function () {
+const encoder = require('plantuml-encoder');
 
-    var RevealPlantUML = {
+const RevealPlantUML = {
+  id: 'plantuml',
+  init: function(reveal) {
+    const config = reveal.getConfig().plantuml || {};
+    const server = config.serverPath || 'https://www.plantuml.com/plantuml/svg/';
 
-        init: function () {
-        },
+    const update = () => {
+      const blocks = document.querySelectorAll('pre code[class*="language-plantuml"], pre code[class*="plantuml"]');
+      blocks.forEach((block) => {
+        if (block.getAttribute('data-plantuml-processed')) return;
+        block.setAttribute('data-plantuml-processed', 'true');
 
-        ready: function () {
-            let encoder = require('plantuml-encoder');
+        const img = document.createElement("img");
+        img.setAttribute("src", server + encoder.encode(block.innerText));
 
-            var config = Reveal.getConfig().plantuml || {};
-            var server = config.serverPath || '//www.plantuml.com/plantuml/svg/';
+        const pre = block.parentElement;
+        pre.parentNode.replaceChild(img, pre);
+      });
+    };
 
-            document.querySelectorAll('.reveal pre code.language-plantuml').forEach(function (block) {
-                let img = document.createElement("img");
-                img.setAttribute("src", server + encoder.encode(block.innerText));
+    reveal.on('ready', update);
+    reveal.on('slidechanged', update);
 
-                let pre = block.parentElement;
-                pre.parentNode.replaceChild(img, pre);
-            });
-        }
+    if (reveal.isReady()) {
+      update();
     }
 
-    Reveal.registerPlugin('plantuml', RevealPlantUML);
-    Reveal.addEventListener('ready', RevealPlantUML.ready);
+    const observer = new MutationObserver(update);
+    observer.observe(reveal.getRevealElement(), {
+      childList: true,
+      subtree: true
+    });
+  }
+};
 
-    return RevealPlantUML;
-}));
+if (typeof module !== 'undefined') {
+  module.exports = RevealPlantUML;
+}
+if (typeof window !== 'undefined') {
+  window.RevealPlantUML = RevealPlantUML;
+}

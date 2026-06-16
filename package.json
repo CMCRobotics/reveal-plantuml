@@ -7,12 +7,12 @@
     "dist"
   ],
   "scripts": {
-    "build": "webpack",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/reveal-plantuml/reveal-plantuml.github.io.git"
+    "url": "git+https://github.com/cmcrobotics/reveal-plantuml.git"
   },
   "keywords": [
     "reveal",
@@ -24,8 +24,10 @@
     "url": "https://github.com/reveal-plantuml/reveal-plantuml.github.io/issues"
   },
   "homepage": "https://reveal-plantuml.github.io",
+  "dependencies": {
+    "plantuml-encoder": "^1.4.0"
+  },
   "devDependencies": {
-    "plantuml-encoder": "^1.4.0",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
   }
